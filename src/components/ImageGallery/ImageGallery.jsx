@@ -1,12 +1,13 @@
-// import s from './ImageGallery.module.css';
-
 import ImageCard from '../ImageCard/ImageCard';
+import s from './ImageGallery.module.css';
 
-const ImageGallery = () => {
+const ImageGallery = ({ images }) => {
   return (
-    <>
-      <ImageCard />
-    </>
+    <ul className={s.gallery}>
+      {images.map((image) => (
+        <ImageCard key={image.id} image={image} />
+      ))}
+    </ul>
   );
 };
 

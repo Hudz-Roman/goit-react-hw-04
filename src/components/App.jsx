@@ -6,36 +6,68 @@ import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
 import SearchBar from './SearchBar/SearchBar';
 
 import { useState, useEffect } from 'react';
-import fetchImages from '../services/api.js';
+import fetchImages from '../services/api';
+// import toast from 'react-hot-toast';
 
 function App() {
   const [images, setImages] = useState([]);
-  // const [isLoading, setLoading] = useState(false);
-  // const [isError, setError] = useState(false);
-  // const [query, setQuery] = useState('');
-  // const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
   // const [numPages, setNumPages] = useState(0);
+
+  // useEffect(() => {
+  //   if (numPages === page) {
+  //     toast.success('You already download all images');
+  //   }
+  // }, [numPages, page]);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const resp = await fetchImages();
-        setImages(resp);
+        setIsLoading(true);
+        setIsError(false);
+        const response = await fetchImages(query, page);
+        const imagesData = response.map(
+          ({ id, urls: { small, regular }, alt_description }) => ({
+            id,
+            small,
+            regular,
+            alt_description,
+          })
+        );
+        setImages((prev) => [...prev, ...imagesData]);
       } catch (error) {
         console.error(error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
-    getData();
-  }, []);
+    if (query) {
+      getData();
+    }
+  }, [query, page]);
+
+  const onSubmit = (query) => {
+    setImages([]);
+    setQuery(query);
+    setPage(1);
+  };
+
+  const onLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   return (
     <>
-      <SearchBar />
-      <Loader />
-      <ImageGallery images={images} />
-      <LoadMoreBtn />
+      <SearchBar onSubmit={onSubmit} />
+      <Loader isLoading={isLoading} />
+      <ImageGallery images={images} isError={isError} />
+      <LoadMoreBtn onLoadMore={onLoadMore} />
       <ImageModal />
-      <ErrorMessage />
+      {isError && <ErrorMessage />}
     </>
   );
 }
