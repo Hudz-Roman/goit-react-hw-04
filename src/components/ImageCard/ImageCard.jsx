@@ -1,11 +1,18 @@
+// import ImageModal from '../ImageModal/ImageModal';
 import s from './ImageCard.module.css';
 
-const ImageCard = ({ image }) => {
+const ImageCard = ({ image, openModal }) => {
   const { small, alt_description } = image;
   return (
-    <div>
-      <img className={s.image} src={small} alt={alt_description} />
-    </div>
+    <li>
+      <img
+        className={s.image}
+        src={small}
+        alt={alt_description}
+        loading='lazy'
+        onClick={() => openModal(image)}
+      />
+    </li>
   );
 };
 

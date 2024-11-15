@@ -2,4 +2,9 @@
   width: 400px;
   height: 267px;
   object-fit: cover;
+  transition: transform 0.25s ease-in-out;
+}
+
+.image:hover {
+  transform: scale(1.015);
 }
