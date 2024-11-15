@@ -1,4 +1,3 @@
-// import ImageModal from '../ImageModal/ImageModal';
 import s from './ImageCard.module.css';
 
 const ImageCard = ({ image, openModal }) => {
